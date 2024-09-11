@@ -6,37 +6,6 @@
     <!-- parameters -->
     <xacro:property name="chassis_mass" value="10"/>
     <xacro:property name="pi" value="3.14159265359"/>
-
-    <!-- Laser scan -->
-    <joint name="joint_laser_scan_chassis" type="fixed">
-        <origin rpy="0 0 0" xyz="0.8 0 0.3" />
-        <child link="link_laser_scan" />
-        <parent link="link_chassis" />
-        <joint_properties damping="1.0" friction="1.0" />
-    </joint>
-    <link name="link_laser_scan">
-        <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <mass value="0.5" />
-            <inertia ixx="0.000252666666667" ixy="0" ixz="0" iyy="0.000252666666667" iyz="0" izz="0.0005"/>
-        </inertial>
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-                <cylinder radius="0.15" length="0.20"/>
-            </geometry>
-            <material name="Red">
-                <color rgba="0.7 0.1 0.1 1" />
-            </material>
-        </visual>
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <cylinder radius="0.15" length="0.20"/>
-            </geometry>
-        </collision>
-    </link>   
-     
     
     <!-- Link - chassis -->
     <link name="link_chassis">
@@ -192,6 +161,48 @@
         </material>     
     </visual>
 </link>
+<!-- joint chassis/robot_tail -->
+<joint name="joint_tail" type="continuous">
+    <origin rpy="0 0 0" xyz="-1 0 0"/>
+    <child link="link_tail"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <joint_properties damping="1.0" friction="1.0"/>
+</joint>
+<!-- link tail -->
+<link name="link_tail">
+    <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.5"/>
+        <inertia ixx="0.000252666666667" ixy="0" ixz="0" iyy="0.000252666666667" iyz="0" izz="0.0005"/>
+    </inertial>
+    <collision>
+        <origin xyz="-0.2 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+            <cylinder radius="0.05" length="0.4"/>
+        </geometry>
+    </collision>
+    <visual>
+        <origin xyz="-0.2 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry>
+            <cylinder radius="0.05" length="0.4"/>
+        </geometry>
+        <material name="Red">
+            <color rgba="0.7 0.1 0.1 1"/>
+        </material>
+    </visual>
+</link>  
+<transmission name="tran_tail">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint_tail">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_joint_tail">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
 
 <!-- joint chassis/caster wheel -->
 <joint name="joint_chassis_caster_wheel" type="fixed">
@@ -243,5 +254,34 @@
         </material>  
     </visual>    
 </link>
+    <!-- Laser scan -->
+    <joint name="joint_laser_scan_chassis" type="fixed">
+        <origin rpy="0 0 0" xyz="0.8 0 0.3" />
+        <child link="link_laser_scan" />
+        <parent link="link_chassis" />
+        <joint_properties damping="1.0" friction="1.0" />
+    </joint>
+    <link name="link_laser_scan">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.5" />
+            <inertia ixx="0.000252666666667" ixy="0" ixz="0" iyy="0.000252666666667" iyz="0" izz="0.0005"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <cylinder radius="0.15" length="0.20"/>
+            </geometry>
+            <material name="Red">
+                <color rgba="0.7 0.1 0.1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.15" length="0.20"/>
+            </geometry>
+        </collision>
+    </link>  
 </robot>
 
